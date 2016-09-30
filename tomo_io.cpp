@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
     double fwrite_eps;
 
     gettimeofday(&fwrite_s, NULL);                // start to count the time takes on writing
-    const char *out_filename = "tomo_out";
+    char *out_filename = (char *)"tomo_out";
     MPI_File_open(MPI_COMM_WORLD, out_filename, MPI_MODE_EXCL | MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
     MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
     MPI_File_close(&fh);
