@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
     memory_allocation(P, S, C);        // allocate memory to emulate output data access
     int stride = sizeof(float) * C * C;
     offset = rank * (S/np) * stride;
-    count = (S/np) * c * c;
+    count = (S/np) * C * C;
     struct timeval fwrite_s, fwrite_e;
     double fwrite_eps;
 
