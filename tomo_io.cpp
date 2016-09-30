@@ -3,6 +3,11 @@
 #include <omp.h>
 #include <time.h>
 #include <sys/time.h>
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cstdlib>
+#include <unistd.h>
 
 using namespace std;
 /*
