@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     }
     env_init(np, rank);
     memory_allocation(P, S, C);        // allocate memory to emulate output data access
-    int stride = sizeof(float) * c * c;
+    int stride = sizeof(float) * C * C;
     offset = rank * (S/np) * stride;
     count = (S/np) * c * c;
     struct timeval fwrite_s, fwrite_e;
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 
     gettimeofday(&fwrite_s, NULL);                // start to count the time takes on writing
     MPI_File_open(MPI_COMM_WORLD, "tomo_out", MPI_MODE_EXCL | MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
-    MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status)  
+    MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
     MPI_File_close(&fh);
 
     MPI_Barrier( MPI_COMM_WORLD );                // should wait untill all processes finish writing
