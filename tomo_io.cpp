@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     MPI_File_close(&fh);
 
     MPI_Barrier( MPI_COMM_WORLD );                // should wait untill all processes finish writing
-    gettimeofday(&fwrite_s, NULL);                // stop count the time takes on writing
+    gettimeofday(&fwrite_e, NULL);                // stop count the time takes on writing
     fwrite_eps = fwrite_e.tv_sec - fwrite_s.tv_sec + (fwrite_e.tv_usec - fwrite_s.tv_usec) / 1e6;
     MPI_Finalize();
     cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
