@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
         exit(-1);
     }
     env_init(np, rank);
-    memory_allocation(P, S, C);        // allocate memory to emulate output data access
+    memory_allocation(P, S/np, C);        // allocate memory to emulate output data access
     int stride = sizeof(float) * C * C;
     offset = rank * (S/np) * stride;
     count = (S/np) * C * C;
@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
     MPI_Barrier( MPI_COMM_WORLD );                // should wait untill all processes finish writing
     gettimeofday(&fwrite_e, NULL);                // stop count the time takes on writing
     fwrite_eps = fwrite_e.tv_sec - fwrite_s.tv_sec + (fwrite_e.tv_usec - fwrite_s.tv_usec) / 1e6;
+    tomo_io_finalize();
     MPI_Finalize();
     cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
     cout << "file write time: " << fwrite_eps << endl;
