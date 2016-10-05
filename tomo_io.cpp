@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
 {
     int rank, np;
     MPI_File fh;
+    int errcode;
     MPI_Offset offset;
     MPI_Status status;
     long long count;
@@ -109,7 +110,11 @@ int main(int argc, char *argv[])
 
     gettimeofday(&fwrite_s, NULL);                // start to count the time takes on writing
     char *out_filename = (char *)"/projects/SDAV/zliu/tomo_out";
-    MPI_File_open(MPI_COMM_WORLD, out_filename, MPI_MODE_EXCL | MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
+    errcode = MPI_File_open(MPI_COMM_WORLD, out_filename, MPI_MODE_EXCL | MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
+    if (errcode != MPI_SUCCESS) {
+		cout << "file open failed" << endl;
+        exit(-1);
+    }
     MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
     MPI_File_close(&fh);
 
@@ -118,6 +123,8 @@ int main(int argc, char *argv[])
     fwrite_eps = fwrite_e.tv_sec - fwrite_s.tv_sec + (fwrite_e.tv_usec - fwrite_s.tv_usec) / 1e6;
     tomo_io_finalize();
     MPI_Finalize();
-    cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
-    cout << "file write time: " << fwrite_eps << endl;
+    if(rank == 0){
+        cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
+        cout << "file write time: " << fwrite_eps << endl;
+    }
 }
