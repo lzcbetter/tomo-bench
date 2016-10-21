@@ -8,7 +8,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <unistd.h>
-
+#include <stdio.h>
 using namespace std;
 /*
 ***************************************************************************************************
@@ -47,7 +47,7 @@ void env_init(int np, int rank)
 */
 void tomo_io_finalize()
 {
-    delete pin_buf;
+    //delete pin_buf;
     delete pout_buf;
 }
 /*
@@ -64,7 +64,7 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 {
     unsigned long in_size  = s * p * c;
     unsigned long out_size = s * c * c;
-    pin_buf  = new float[in_size];
+    //pin_buf  = new float[in_size];
     pout_buf = new float[out_size];
 }
 /*
@@ -85,16 +85,19 @@ int main(int argc, char *argv[])
     MPI_Offset offset;
     MPI_Status status;
     long long count;
+    unsigned int write_flag;
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &np);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    if(argc < 4){
+    if(argc != 5){
         cout << "no sufficient parameters given" << endl;
+        cout << "arguments should be given as: MPIO write way, 0 for independent and 1 for collective \n P, S, C"
         exit(-1);
     }else{
-        P = atoi(argv[1]);
-        S = atoi(argv[2]);
-        C = atoi(argv[3]);
+        write_flag = atoi(argv[1]);
+        P = atoi(argv[2]);
+        S = atoi(argv[3]);
+        C = atoi(argv[4]);
     }
     if(S % np != 0){
         cout << "number of sinograms should be perfectly divisible by the number of processes" << endl;
@@ -116,7 +119,11 @@ int main(int argc, char *argv[])
 		cout << "file open failed" << endl;
         exit(-1);
     }
-    MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
+    if (write_flag == 0){
+        MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
+    }else{
+        MPI_File_write_at_all(fh, offset, pout_buf, count, MPI_FLOAT, &status);
+    }
     MPI_File_close(&fh);
 
     MPI_Barrier( MPI_COMM_WORLD );                // should wait untill all processes finish writing
@@ -125,6 +132,12 @@ int main(int argc, char *argv[])
     tomo_io_finalize();
     MPI_Finalize();
     if(rank == 0){
+        remove(out_filename);                     // delete file to avoid wasting storage
+        if (write_flag == 0){
+            cout << "file write independently";
+        }else{
+            cout << "file write collectively";
+        }
         cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
         cout << "file write time: " << fwrite_eps << endl;
     }
