@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     if(argc != 5){
         cout << "no sufficient parameters given" << endl;
-        cout << "arguments should be given as: MPIO write way, 0 for independent and 1 for collective \n P, S, C"
+        cout << "arguments should be given as: MPIO write way, 0 for independent and 1 for collective \n P, S, C" << endl;
         exit(-1);
     }else{
         write_flag = atoi(argv[1]);
