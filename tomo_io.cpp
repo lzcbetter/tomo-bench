@@ -1,6 +1,6 @@
 #include "tomo_io.hpp"
 #include <mpi.h>
-#include <omp.h>
+//#include <omp.h>
 #include <time.h>
 #include <sys/time.h>
 #include <iostream>
