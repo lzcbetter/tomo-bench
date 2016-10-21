@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
             cout << "file write collectively " << endl;
         }
         cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
-        cout << "there are " << np << "processes, each process writes: " << count*sizeof(MPI_FLOAT) << " bytes" << endl; 
+        cout << "there are " << np << " processes, each process writes: " << count*sizeof(MPI_FLOAT) << " bytes" << endl; 
         cout << "file write time: " << fwrite_eps << " seconds" << endl;
     }
 }
