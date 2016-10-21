@@ -140,6 +140,7 @@ int main(int argc, char *argv[])
         }
         cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
         cout << "there are " << np << " processes, each process writes: " << count*sizeof(MPI_FLOAT) << " bytes" << endl; 
+        cout << "total file size is: " << np*count*sizeof(MPI_FLOAT)/1024/1024/1024 << " GB" << endl;
         cout << "file write time: " << fwrite_eps << " seconds" << endl;
     }
 }
