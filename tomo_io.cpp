@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
             cout << "file write collectively";
         }
         cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
+        cout << "each process writes: " << count*sizeof(MPI_FLOAT) << " bytes" << endl; 
         cout << "file write time: " << fwrite_eps << endl;
     }
 }
