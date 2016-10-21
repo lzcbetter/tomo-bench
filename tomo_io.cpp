@@ -20,7 +20,7 @@ using namespace std;
 * return: none
 ***************************************************************************************************
 */
-void env_init(int np, int rank)
+void env_init(int np, int rank, unsigned int P, unsigned int S, unsigned int C, unsigned int write_flag)
 {
     char filename[100];
     #if _DEBUG_
@@ -29,7 +29,7 @@ void env_init(int np, int rank)
     #else
         if(rank == 0)
         {
-            sprintf( filename, "Rank-%d-stdout.txt", rank );
+            sprintf( filename, "Rank-%d-P%d-S%d-C%d-TYPE%d.txt", rank, P, S, C, write_flag );
             freopen( filename, "w", stdout );
         }
     #endif
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
         cout << "number of sinograms should be perfectly divisible by the number of processes" << endl;
         exit(-1);
     }
-    env_init(np, rank);
+    env_init(np, rank, P, S, C, write_flag);
     memory_allocation(P, S/np, C);        // allocate memory to emulate output data access
     int stride = sizeof(float) * C * C;
     offset = rank * (S/np) * stride;
