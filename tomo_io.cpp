@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     if(argc != 5){
         cout << "no sufficient parameters given" << endl;
-        cout << "arguments should be given as: MPIO write way, 0 for independent and 1 for collective \n P, S, C" << endl;
+        cout << "arguments should be given as: (MPIO write way, 0 for independent and 1 for collective) P, S, C" << endl;
         exit(-1);
     }else{
         write_flag = atoi(argv[1]);
@@ -134,12 +134,12 @@ int main(int argc, char *argv[])
     if(rank == 0){
         remove(out_filename);                     // delete file to avoid wasting storage
         if (write_flag == 0){
-            cout << "file write independently";
+            cout << "file write independently " << endl;
         }else{
-            cout << "file write collectively";
+            cout << "file write collectively " << endl;
         }
         cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
         cout << "there are " << np << "processes, each process writes: " << count*sizeof(MPI_FLOAT) << " bytes" << endl; 
-        cout << "file write time: " << fwrite_eps << endl;
+        cout << "file write time: " << fwrite_eps << " seconds" << endl;
     }
 }
