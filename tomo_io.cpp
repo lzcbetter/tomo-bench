@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     }
     env_init(np, rank, P, S, C, write_flag);
     memory_allocation(P, S/np, C);        // allocate memory to emulate output data access
-    int stride = sizeof(float) * C * C;
+    int stride = sizeof(MPI_FLOAT) * C * C;
     offset = rank * (S/np) * stride;
     count = (S/np) * C * C;
     struct timeval fwrite_s, fwrite_e;
