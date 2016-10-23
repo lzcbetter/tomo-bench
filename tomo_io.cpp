@@ -64,8 +64,8 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 {
     unsigned long in_size  = s * p * c;               // input buffer size, one process
     unsigned long out_size = s * c * c;               // output buffer size, one process
-    //pin_buf  = new MPI_FLOAT[in_size];
-    pout_buf = new MPI_FLOAT[out_size];
+    //pin_buf  = new float[in_size];
+    pout_buf = new float[out_size];
 }
 /*
 ***************************************************************************************************
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     }
     env_init(np, rank, P, S, C, write_flag);
     memory_allocation(P, S/np, C);        // allocate memory to emulate output data access
-    int stride = sizeof(MPI_FLOAT) * C * C;
+    int stride = sizeof(float) * C * C;
     offset = rank * (S/np) * stride;
     count = (S/np) * C * C;
     struct timeval fwrite_s, fwrite_e;
@@ -139,8 +139,8 @@ int main(int argc, char *argv[])
             cout << "file write collectively " << endl;
         }
         cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
-        cout << "there are " << np << " processes, each process writes: " << count*sizeof(MPI_FLOAT) << " bytes" << endl; 
-        cout << "total file size is: " << (float)np*count*sizeof(MPI_FLOAT)/1024.0/1024.0/1024.0 << " GB" << endl;
+        cout << "there are " << np << " processes, each process writes: " << count*sizeof(float) << " bytes" << endl; 
+        cout << "total file size is: " << (float)np*count*sizeof(float)/1024.0/1024.0/1024.0 << " GB" << endl;
         cout << "file write time: " << fwrite_eps << " seconds" << endl;
     }
 }
