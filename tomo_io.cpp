@@ -64,8 +64,8 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 {
     unsigned long in_size  = s * p * c;               // input buffer size, one process
     unsigned long out_size = s * c * c;               // output buffer size, one process
-    //pin_buf  = new float[in_size];
-    pout_buf = new float[out_size];
+    //pin_buf  = new MPI_FLOAT[in_size];
+    pout_buf = new MPI_FLOAT[out_size];
 }
 /*
 ***************************************************************************************************
