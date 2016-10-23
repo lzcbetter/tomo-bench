@@ -30,7 +30,7 @@ void env_init(int np, int rank, unsigned int P, unsigned int S, unsigned int C, 
         if(rank == 0)
         {
             sprintf( filename, "Rank-%d-NP-%d-P%d-S%d-C%d-TYPE%d.txt", rank, np, P, S, C, write_flag );
-            freopen( filename, "w", stdout );
+            //freopen( filename, "w", stdout );
         }
     #endif
 }
@@ -56,14 +56,14 @@ void tomo_io_finalize()
 * description: allocate memory for hosting input/output
 *
 * parameters : 
-*             # of projection, sinogram, column
+*             # of projection, sinogram, column per rank
 * return: none
 ***************************************************************************************************
 */
 void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 {
-    unsigned long in_size  = s * p * c;
-    unsigned long out_size = s * c * c;
+    unsigned long in_size  = s * p * c;               // input buffer size, one process
+    unsigned long out_size = s * c * c;               // output buffer size, one process
     //pin_buf  = new float[in_size];
     pout_buf = new float[out_size];
 }

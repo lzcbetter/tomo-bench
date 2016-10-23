@@ -13,7 +13,7 @@
 unsigned int P;      // number of projections
 unsigned int S;      // number of sinograms
 unsigned int C;      // number of columns
-float *pin_buf;      // pointer to input buffer
-float *pout_buf;     // pointer to output buffer
+float *pin_buf;      // pointer to input buffer (one process)
+float *pout_buf;     // pointer to output buffer (one process)
 
 #endif
