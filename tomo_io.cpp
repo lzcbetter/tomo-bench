@@ -29,7 +29,7 @@ void env_init(int np, int rank, unsigned int P, unsigned int S, unsigned int C, 
     #else
         if(rank == 0)
         {
-            sprintf( filename, "Rank-%d-P%d-S%d-C%d-TYPE%d.txt", rank, P, S, C, write_flag );
+            sprintf( filename, "Rank-%d-NP-%d-P%d-S%d-C%d-TYPE%d.txt", rank, np, P, S, C, write_flag );
             freopen( filename, "w", stdout );
         }
     #endif
