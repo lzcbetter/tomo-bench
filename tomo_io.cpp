@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
     tomo_io_finalize();
     MPI_Finalize();
     if(rank == 0){
-        //remove(out_filename);                     // delete file to avoid wasting storage
+        remove(out_filename);                     // delete file to avoid wasting storage
         if (write_flag == 0){
             cout << "file write independently " << endl;
         }else{
