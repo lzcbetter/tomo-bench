@@ -112,7 +112,8 @@ int main(int argc, char *argv[])
     double fwrite_eps;
 
     gettimeofday(&fwrite_s, NULL);                // start to count the time takes on writing
-    char *out_filename = (char *)"/projects/SDAV/zliu/tomo_out";
+    char out_filename[256];
+    sprintf( out_filename, "/projects/SDAV/zliu/tomo_out-NP-%d-P%d-S%d-C%d-TYPE%d", np, P, S, C, write_flag );
     //char *out_filename = (char *)"tomo_out";
     errcode = MPI_File_open(MPI_COMM_WORLD, out_filename,  MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
     if (errcode != MPI_SUCCESS) {
@@ -132,7 +133,7 @@ int main(int argc, char *argv[])
     tomo_io_finalize();
     MPI_Finalize();
     if(rank == 0){
-        remove(out_filename);                     // delete file to avoid wasting storage
+        //remove(out_filename);                     // delete file to avoid wasting storage
         if (write_flag == 0){
             cout << "file write independently " << endl;
         }else{
