@@ -83,7 +83,7 @@ void write_to_one_file(char *out_filename, unsigned int wr_flag, MPI_Offset offs
     int errcode;
     errcode = MPI_File_open(MPI_COMM_WORLD, out_filename,  MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
     if (errcode != MPI_SUCCESS) {
-        cout << "file open failed" << endl;
+        cout << "file open failed: " << out_filename << endl;
         exit(-1);
     }
     if (wr_flag == 0){
