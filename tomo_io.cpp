@@ -69,6 +69,31 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 }
 /*
 ***************************************************************************************************
+* func   name: write_to_one_file
+* description: results will be write to one single file, either collectively or independently
+*
+* parameters : 
+*             # of projection, sinogram, column per rank
+* return: none
+***************************************************************************************************
+*/
+void write_to_one_file(char *out_filename, unsigned int wr_flag, MPI_Offset offset, long long count){
+    MPI_File fh;
+    int errcode;
+    errcode = MPI_File_open(MPI_COMM_WORLD, out_filename,  MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
+    if (errcode != MPI_SUCCESS) {
+        cout << "file open failed" << endl;
+        exit(-1);
+    }
+    if (wr_flag == 0){
+        MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
+    }else if (wr_flag == 1){
+        MPI_File_write_at_all(fh, offset, pout_buf, count, MPI_FLOAT, &status);
+    } 
+    MPI_File_close(&fh);
+}
+/*
+***************************************************************************************************
 * func   name: main
 * description: the main access function, it has several arguments. must be given in execution, 
 *
@@ -80,8 +105,6 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 int main(int argc, char *argv[])
 {
     int rank, np;
-    MPI_File fh;
-    int errcode;
     MPI_Offset offset;
     MPI_Status status;
     long long count;
@@ -113,20 +136,14 @@ int main(int argc, char *argv[])
 
     gettimeofday(&fwrite_s, NULL);                // start to count the time takes on writing
     char out_filename[256];
-    sprintf( out_filename, "/projects/SDAV/zliu/tomo_out-NP-%d-P%d-S%d-C%d-TYPE%d", np, P, S, C, write_flag );
-    //char *out_filename = (char *)"tomo_out";
-    errcode = MPI_File_open(MPI_COMM_WORLD, out_filename,  MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
-    if (errcode != MPI_SUCCESS) {
-		cout << "file open failed" << endl;
-        exit(-1);
-    }
-    if (write_flag == 0){
-        MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
+    
+    if (write_flag == 1 || write_flag == 0){
+        sprintf( out_filename, "/projects/SDAV/zliu/tomo_out-NP-%d-P%d-S%d-C%d-TYPE%d", np, P, S, C, write_flag );
+        //char *out_filename = (char *)"tomo_out";
+        write_to_one_file(out_filename, write_flag, offset, count);
     }else{
-        MPI_File_write_at_all(fh, offset, pout_buf, count, MPI_FLOAT, &status);
+        sprintf( out_filename, "/projects/SDAV/zliu/tomo_out/%d/tomo_out-NP-%d-P%d-S%d-C%d-TYPE%d", rank, np, P, S, C, write_flag );
     }
-    MPI_File_close(&fh);
-
     MPI_Barrier( MPI_COMM_WORLD );                // should wait untill all processes finish writing
     gettimeofday(&fwrite_e, NULL);                // stop count the time takes on writing
     fwrite_eps = fwrite_e.tv_sec - fwrite_s.tv_sec + (fwrite_e.tv_usec - fwrite_s.tv_usec) / 1e6;
@@ -135,9 +152,13 @@ int main(int argc, char *argv[])
     if(rank == 0){
         remove(out_filename);                     // delete file to avoid wasting storage
         if (write_flag == 0){
-            cout << "file write independently " << endl;
-        }else{
+            cout << "file write independently to one file" << endl;
+        }else if(write_flag == 1){
             cout << "file write collectively " << endl;
+        }else if(write_flag == 2){
+            cout << "file write independently to np files" << endl;
+        }else{
+            cout << "unknown write flag!!!" << endl;
         }
         cout << "P= " << P << ", S= " << S << ", C= " << C << endl;
         cout << "there are " << np << " processes, each process writes: " << count*sizeof(float) << " bytes" << endl; 
