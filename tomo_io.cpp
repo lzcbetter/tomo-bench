@@ -79,6 +79,7 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 */
 void write_to_one_file(char *out_filename, unsigned int wr_flag, MPI_Offset offset, long long count){
     MPI_File fh;
+    MPI_Status status;
     int errcode;
     errcode = MPI_File_open(MPI_COMM_WORLD, out_filename,  MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
     if (errcode != MPI_SUCCESS) {
@@ -126,7 +127,6 @@ int main(int argc, char *argv[])
 {
     int rank, np;
     MPI_Offset offset;
-    MPI_Status status;
     long long count;
     unsigned int write_flag;
     MPI_Init(&argc, &argv);
