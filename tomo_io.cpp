@@ -70,10 +70,10 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 /*
 ***************************************************************************************************
 * func   name: write_to_one_file
-* description: results will be write to one single file, either collectively or independently
+* description: results will be wrote to one single file, either collectively or independently
 *
 * parameters : 
-*             # of projection, sinogram, column per rank
+*             # TODO
 * return: none
 ***************************************************************************************************
 */
@@ -91,6 +91,26 @@ void write_to_one_file(char *out_filename, unsigned int wr_flag, MPI_Offset offs
         MPI_File_write_at_all(fh, offset, pout_buf, count, MPI_FLOAT, &status);
     } 
     MPI_File_close(&fh);
+}
+/*
+***************************************************************************************************
+* func   name: write_to_one_file
+* description: results will be independently wrote to np  files
+*
+* parameters : 
+*             # TODO
+* return: none
+***************************************************************************************************
+*/
+void write_to_indep_files(char *out_filename, long long count){
+    FILE *fp;
+    fp = fopen(out_filename, "w");
+    if(fp == NULL){
+        cout << "file open failed: " << out_filename << endl;
+        exit(-1);
+    }
+    fwrite(pout_buf, sizeof(float), count, fp);
+    fclose(fp);
 }
 /*
 ***************************************************************************************************
@@ -143,6 +163,7 @@ int main(int argc, char *argv[])
         write_to_one_file(out_filename, write_flag, offset, count);
     }else{
         sprintf( out_filename, "/projects/SDAV/zliu/tomo_out/%d/tomo_out-NP-%d-P%d-S%d-C%d-TYPE%d", rank, np, P, S, C, write_flag );
+        write_to_indep_files(out_filename, count);
     }
     MPI_Barrier( MPI_COMM_WORLD );                // should wait untill all processes finish writing
     gettimeofday(&fwrite_e, NULL);                // stop count the time takes on writing
