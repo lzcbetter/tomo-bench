@@ -80,12 +80,17 @@ void memory_allocation(unsigned int p, unsigned int s, unsigned int c)
 void write_to_one_file(char *out_filename, unsigned int wr_flag, MPI_Offset offset, long long count){
     MPI_File fh;
     MPI_Status status;
+    MPI_Info info;
     int errcode;
-    errcode = MPI_File_open(MPI_COMM_WORLD, out_filename,  MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
+
+    MPI_Info_create(&info);
+    MPI_Info_set(info, "bg_nodes_pset", "32");
+    errcode = MPI_File_open(MPI_COMM_WORLD, out_filename,  MPI_MODE_CREATE | MPI_MODE_WRONLY, info, &fh);
     if (errcode != MPI_SUCCESS) {
         cout << "file open failed: " << out_filename << endl;
         exit(-1);
     }
+    MPI_Info_free(&info);
     if (wr_flag == 0){
         MPI_File_write_at(fh, offset, pout_buf, count, MPI_FLOAT, &status);
     }else if (wr_flag == 1){
