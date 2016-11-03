@@ -175,8 +175,14 @@ int main(int argc, char *argv[])
     fwrite_eps = fwrite_e.tv_sec - fwrite_s.tv_sec + (fwrite_e.tv_usec - fwrite_s.tv_usec) / 1e6;
     tomo_io_finalize();
     MPI_Finalize();
-    if(rank == 0){
+    if (write_flag == 2){
         remove(out_filename);                     // delete file to avoid wasting storage
+    }else{
+        if(rank == 0){
+            remove(out_filename);                 // delete file to avoid wasting storage
+        }
+    }
+    if(rank == 0){
         if (write_flag == 0){
             cout << "file write independently to one file" << endl;
         }else if(write_flag == 1){
